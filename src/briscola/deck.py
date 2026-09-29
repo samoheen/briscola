@@ -1,13 +1,15 @@
 from collections.abc import Iterable
 from .card import Card
 
+
 class EmptyDeckError(LookupError):
     """There is no cards in a deck"""
 
+
 class Deck:
     def __init__(
-        self,
-        cards: Iterable[Card],
+            self,
+            cards: Iterable[Card],
     ) -> None:
         self._cards = list(cards)
 

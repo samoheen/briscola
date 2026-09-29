@@ -4,13 +4,16 @@ from types import MappingProxyType
 from .card import Card, PlayedCard, Trick
 from .deck import Deck
 
+
 class GamePhase(Enum):
     FIRST_PLAY = auto()
     SECOND_PLAY = auto()
     GAME_OVER = auto()
 
+
 class InvalidActionError(RuntimeError):
     """Action is not allowed in the current phase"""
+
 
 class Game:
     # 2 4 5 6 7 Fante Cavallo Re 3 Asso
@@ -24,13 +27,13 @@ class Game:
     _suits = "S C D B".split()
 
     def __init__(
-        self,
-        *,
-        rng: Random | None = None,
-        first_player: int = 0,
+            self,
+            *,
+            rng: Random | None = None,
+            first_player: int = 0,
     ) -> None:
         self._require_player(first_player)
-        
+
         self._deck = self._create_deck(rng)
         self._current_player = first_player
 
@@ -39,6 +42,8 @@ class Game:
         self._tricks: tuple[list[Trick], list[Trick]] = ([], [])
 
         self._trump_card: Card | None = None
+
+        self._phase = None
 
         self._setup()
 
@@ -89,7 +94,7 @@ class Game:
         self._require_phase(GamePhase.FIRST_PLAY, GamePhase.SECOND_PLAY)
         self._require_player(player)
 
-        if (player != self._current_player):
+        if player != self._current_player:
             raise InvalidActionError()
 
         card = self._hands[player].pop(hand_index)
@@ -120,7 +125,7 @@ class Game:
             if self._deck:
                 self._hands[player].append(self._deck.draw())
 
-        if (any(self._hands)):
+        if any(self._hands):
             self._phase = GamePhase.FIRST_PLAY
         else:
             self._phase = GamePhase.GAME_OVER
@@ -141,7 +146,7 @@ class Game:
 
     @staticmethod
     def _require_player(player: int) -> None:
-        if (player not in (0, 1)):
+        if player not in (0, 1):
             raise ValueError("The player must have an index of 0 or 1")
 
     def _require_phase(self, *allowed: GamePhase) -> None:
